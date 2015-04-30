@@ -2,13 +2,29 @@
 
 var http = require('http'),
     io = require('socket.io'),
-    omx = require('omxcontrol');
+    omx = require('omxcontrol'),
+    sys = require('sys'),
+    exec = require('child_process').exec;
+
+//start up beamer
+var device = 'nec399',
+    key = 'KEY_POWER',
+    command = "irsend SEND_START "+device+" "+key;
+
+exec(command, function(error, stdout, stderr){
+  if(error)
+    console.log("Error sending command", error, stdout,stderr);
+  else
+    console.log("Successfully sent command");
+});
+//done
+
 
 // Create server & socket
 var server = http.createServer(function(req, res){
   // Send HTML headers and message
   res.writeHead(404, {'Content-Type': 'text/html'});
-  res.end('<h1>Aw, snap! 404</h1>');
+  res.end('<h1>Running</h1>');
 });
 
 server.listen(8080);
@@ -39,6 +55,22 @@ io.on('connection', function(socket) {
   });
 
 });
+
+// this function is called when you want the server to die gracefully
+// i.e. wait for existing connections
+var gracefulShutdown = function() {
+  console.log("Received kill signal, shutting down gracefully.");
+  server.close(function() {
+    console.log("Closed out remaining connections.");
+    process.exit();
+  });
+  
+   // if after 
+   setTimeout(function() {
+     console.error("Could not close connections in time, forcefully shutting down");
+     process.exit();
+  }, 10*1000);
+};
 
 // listen for TERM signal .e.g. kill 
 process.on ('SIGTERM', gracefulShutdown);
