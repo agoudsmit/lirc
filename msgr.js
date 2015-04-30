@@ -1,9 +1,25 @@
 var io = require('socket.io-client'),
     gpio = require("gpio"),
+    sys = require('sys'),
+    exec = require('child_process').exec,
     video = 'eagle1.mp4';
 
-console.log('start node server /w PIR');
 
+//start up beamer
+var device = 'nec399',
+    key = 'KEY_POWER',
+    command = "irsend SEND_START "+device+" "+key;
+
+exec(command, function(error, stdout, stderr){
+  if(error)
+    console.log("Error sending command", error, stdout,stderr);
+  else
+    console.log("Successfully sent command");
+});
+//done
+
+//start up PIR
+console.log('start node server /w PIR');
 var gpio27 = gpio.export(27, {
    direction: "in",
    ready: function() {
