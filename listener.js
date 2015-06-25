@@ -7,7 +7,7 @@ var http = require('http'),
     exec = require('child_process').exec;
 
 //start up beamer
-var device = 'nec399',
+var device = 'BENQ',
     key = 'KEY_POWER',
     command = "irsend SEND_START "+device+" "+key;
 

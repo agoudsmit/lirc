@@ -4,7 +4,6 @@ var io = require('socket.io-client'),
     exec = require('child_process').exec,
     video = 'eagle1.mp4';
 
-
 //start up beamer
 var device = 'nec399',
     key = 'KEY_POWER',
